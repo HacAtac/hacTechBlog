@@ -1,12 +1,14 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
-
+// this will be a class that will be used to define the table in the database and the methods that will be available to the table
 class User extends Model {
+  // this is a method that will be available to the table
   checkPassword(loginPw) {
+    // this will compare the password that the user entered to the password that is stored in the database
     return bcrypt.compareSync(loginPw, this.password);
   }
 }
-
+// this is a method that will be available to the table and will define the table in the database
 User.init(
   {
     id: {
