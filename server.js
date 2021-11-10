@@ -14,6 +14,7 @@ app.use(routes); // use routes from controllers.js file (routes.js) file
 const exphbs = require("express-handlebars"); // import express-handlebars for handlebars
 //create instance of express-handlebars and pass it the options object
 const hbs = exphbs.create({
+  // create handlebars instance with options object (defaultLayout: "main")
   defaultLayout: "main",
   extname: "hbs",
   helpers: {
@@ -27,6 +28,25 @@ const hbs = exphbs.create({
     },
   },
 });
+
+app.engine("handlebars", hbs.engine); // set handlebars as the engine
+app.set("view engine", "handlebars"); // set the view engine to handlebars
+
+// import connect-session-sequelize for session storage and pass it the sequelize instance and options object (cookie: {maxAge: 60000})
+const SequelizeStore = require("connect-session-sequelize")(session.Store);
+
+const sess = {
+  // this will be the session object that will be passed to the session middleware (session: sess) in the server.js file
+  secret: "HUGE secret", // set the secret to a huge string
+  cookie: {}, // set the cookie object to an empty object
+  resave: false, // set resave to false
+  saveUninitialized: false, // set saveUninitialized to false
+  store: new SequelizeStore({
+    // create a new instance of SequelizeStore passing in the sequelize instance and options object (cookie: {maxAge: 60000})
+    db: sequelize, // set db to sequelize
+  }),
+};
+app.use(session(sess)); // use session with the sess object
 
 // require routes  and pass in the app instance and sequelize instance to use the routes in the routes folder
 sequelize.sync({ force: false }).then(() => {
