@@ -52,4 +52,20 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
+//GET route for /post/:id
+router.get("/post/:id", (req, res) => {
+  const post = {
+    id: 1,
+    post_url: "https://handlebarsjs.com/guide",
+    title: "Handlebars Docs",
+    created_at: new Date(),
+    vote_count: 15,
+    comments: [{}, {}],
+    user: {
+      username: "TESTIE123",
+    },
+  };
+  res.render("post", { post });
+});
+
 module.exports = router;
