@@ -37,6 +37,7 @@ class Post extends Model {
 Post.init(
   {
     id: {
+      // this is the id of the post that will be created in the database
       // this is the id of the post that will be created in the database and will be auto incremented by sequelize
       type: DataTypes.INTEGER, //
       allowNull: false,
@@ -45,8 +46,17 @@ Post.init(
     },
     // this is the title of the post that will be created in the database and will be a string
     title: {
+      // this is the title of the post that will be created in the database and will be a string
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    post_content: {
+      // this is the content of the post that will be created in the database and will be a string
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [10],
+      },
     },
     // this is the url of the post that will be created in the database and will be a string that is unique to the post
     post_url: {

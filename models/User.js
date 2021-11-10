@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const sequelize = require("../config/connection");
+const bcrypt = require("bcrypt");
 // this will be a class that will be used to define the table in the database and the methods that will be available to the table
 class User extends Model {
   // this is a method that will be available to the table
