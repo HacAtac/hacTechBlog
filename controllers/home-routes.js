@@ -49,23 +49,62 @@ router.get("/", (req, res) => {
 
 //GET route for login page
 router.get("/login", (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect("/");
+    return;
+  }
+
   res.render("login");
 });
 
-//This is a get route for the register page to render the register page to the user when they click on the register button
+// GET route to get one post by id
 router.get("/post/:id", (req, res) => {
-  const post = {
-    id: 1,
-    post_url: "https://handlebarsjs.com/guide",
-    title: "Handlebars Docs",
-    created_at: new Date(),
-    vote_count: 15,
-    comments: [{}, {}],
-    user: {
-      username: "TESTIE123",
+  Post.findOne({
+    where: {
+      id: req.params.id,
     },
-  };
-  res.render("post", { post });
+    attributes: [
+      "id",
+      "post_url",
+      "title",
+      "post_content",
+      "created_at",
+      [
+        sequelize.literal(
+          "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
+        ),
+        "vote_count",
+      ],
+    ],
+    include: [
+      {
+        model: Comment,
+        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
+        include: {
+          model: User,
+          attributes: ["username"],
+        },
+      },
+      {
+        model: User,
+        attributes: ["username"],
+      },
+    ],
+  })
+    .then((dbPostData) => {
+      if (!dbPostData) {
+        res.status(404).json({ message: "No post found with this id" });
+        return;
+      }
+      const post = dbPostData.get({ plain: true });
+      res.render("single-post", {
+        post: post,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
 
 module.exports = router;
