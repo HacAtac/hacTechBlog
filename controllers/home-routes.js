@@ -52,7 +52,7 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-//GET route for /post/:id
+//This is a get route for the register page to render the register page to the user when they click on the register button
 router.get("/post/:id", (req, res) => {
   const post = {
     id: 1,
