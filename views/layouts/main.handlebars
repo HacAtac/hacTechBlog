@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Proza+Libre&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <title>hacTechBlog</title>
+</head>
+
+<body>
+    <header>
+        <div>
+            <div>
+                <h1>hacTechBlog</h1>
+            </div>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                {{#if loggedIn}}
+                <li><a href="/dashboard">Dashboard</a></li>
+                {{else}}
+                <li><a href="/login">login</a></li>
+                {{/if}}
+                {{#if loggedIn}}
+                <button id="logout"><li>Log out</li></button>
+                {{/if}}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {{{ body }}}
+    </main>
+
+    <footer></footer>
+</body>
+</html>

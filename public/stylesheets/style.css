@@ -1,0 +1,148 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  background-color: #fafafa;
+}
+
+h1,
+h2,
+h3,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Roboto", sans-serif;
+}
+
+p {
+  font-family: "Roboto", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  background-color: #ffffff00;
+  color: black;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  padding: 30px 10px 50px 100px;
+}
+
+header div {
+  border-radius: 10px;
+  border: 1px solid #e6e6e6;
+  background-color: red;
+}
+
+header div div {
+  position: relative;
+  top: 5px;
+  left: 5px;
+  background-color: red;
+  border: 1px solid red;
+  border-radius: 14px;
+}
+header div div h1 {
+  margin: 20px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+header nav {
+  display: flex;
+  align-items: center;
+  margin-right: 25px;
+}
+header nav ul {
+  display: flex;
+  align-items: center;
+  margin-right: 25px;
+}
+header nav ul li {
+  border: 1px solid #fbebd8;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 10px;
+}
+header nav ul li:hover {
+  border: 1px solid #fbedb8;
+  background-color: salmon;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+}
+
+.outer-border {
+  position: relative;
+  top: 100px;
+  border: 2px solid black;
+  padding: 10px;
+}
+
+.inner-border {
+  border: 2px solid black;
+  padding: 10px;
+}
+.start-message {
+  background-color: #ffeacf;
+  border: 2px solid black;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+.start-message h2 {
+  margin: 10px 0px;
+  background-color: #ffffff00;
+}
+.start-message p {
+  background-color: #ffffff00;
+  margin-bottom: 10px;
+}
+
+/* LogIn / SignUp Page */
+.login-logout-container {
+  position: relative;
+  top: 100px;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  padding: 20px;
+}
+.form {
+  border: 2px solid black;
+  border-radius: 15px;
+  padding: 50px;
+}
+.form div {
+  padding: 15px;
+  width: 300px;
+  height: 50px;
+}
+.form label {
+  float: left;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 5px 10px 5px 10px;
+}
+.form input {
+  float: right;
+  margin-top: 5px;
+  border-radius: 5px;
+  height: 120%;
+}
+.login-btn {
+  position: relative;
+  top: 20px;
+  height: 88%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.login-btn button {
+  position: relative;
+  width: 100px;
+  height: 25px;
+  border-radius: 5px;
+}
