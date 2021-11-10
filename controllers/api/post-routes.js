@@ -121,8 +121,6 @@ router.put("/upvote", (req, res) => {
         console.log(err);
         res.status(500).json(err);
       });
-  } else {
-    res.status(401).json({ message: "You must be logged in to upvote" });
   }
 });
 

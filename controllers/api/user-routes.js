@@ -1,6 +1,5 @@
 // this is the router object from express module that we are using to create the routes
 const router = require("express").Router();
-const { resolveSoa } = require("dns");
 const { User, Post, Vote, Comment } = require("../../models");
 
 // this is the route that will be used to get all the users
@@ -79,32 +78,30 @@ router.post("/", (req, res) => {
   });
 });
 
-// this will be a login post route that will be used to login the user
+// POST /login  Creates a new user
 router.post("/login", (req, res) => {
   User.findOne({
     where: {
-      // this will find the user with the email that is passed in the body
       email: req.body.email,
     },
   }).then((dbUserData) => {
-    // this will return the data from the database
     if (!dbUserData) {
-      res.status(400).json({ message: "NO CAN DO COMPADRE!" });
-      return; // this will return the error if there is no user with the email that is passed in the request
+      res.status(400).json({ message: "No user with that email address!" });
+      return;
     }
 
-    const validPass = dbUserData.checkPassword(req.body.password); // this will check the password that is passed in the request with the password that is in the database
-    if (!validPass) {
-      res.status(400).json({ message: "Wrong Pass!" });
+    const validPassword = dbUserData.checkPassword(req.body.password);
+    if (!validPassword) {
+      res.status(400).json({ message: "Incorrect password!" });
       return;
     }
 
     req.session.save(() => {
-      // this will save the session to the database and will return the session id to the user in the response
       req.session.user_id = dbUserData.id;
       req.session.username = dbUserData.username;
       req.session.loggedIn = true;
-      res.json({ user: dbUserData, message: "Success!" });
+
+      res.json({ user: dbUserData, message: "You are now logged in!" });
     });
   });
 });

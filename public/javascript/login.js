@@ -1,6 +1,3 @@
-//Front in javascript logic for login page
-// async function that takes event as parameter and prevent default behaviour of the event and await for response from the server
-// then if the response is ok then redirect to the home page else display the error message on the console
 async function signupFormHandler(event) {
   event.preventDefault();
 
@@ -8,7 +5,6 @@ async function signupFormHandler(event) {
   const email = document.querySelector("#email-signup").value.trim();
   const password = document.querySelector("#password-signup").value.trim();
 
-  //condition to check username password an email and await for response
   if (username && email && password) {
     const response = await fetch("/api/users", {
       method: "post",
@@ -19,21 +15,19 @@ async function signupFormHandler(event) {
       }),
       headers: { "Content-Type": "application/json" },
     });
+
     if (response.ok) {
       console.log("success");
-      alert("Signup Successful");
+      alert("You've been signed up");
     } else {
       alert(response.statusText);
     }
   }
 }
-
 document
-  .querySelector("#sign-up")
-  .addEventListener("sumbit", signupFormHandler);
+  .querySelector(".signup-form")
+  .addEventListener("submit", signupFormHandler);
 
-// async function for loginFormHandler that takes event as parameter and prevent default behaviour of the event and await for response from the server
-// then if the response is ok then redirect to the home page else display the error message on the console
 async function loginFormHandler(event) {
   event.preventDefault();
 
@@ -51,12 +45,14 @@ async function loginFormHandler(event) {
     });
 
     if (response.ok) {
-      alert("Login Successful");
       document.location.replace("/");
-      //alert("Login Successful");
+      alert("you're logged in");
     } else {
       alert(response.statusText);
     }
   }
 }
-document.querySelector("#log-in").addEventListener("submit", loginFormHandler);
+
+document
+  .querySelector(".login-form")
+  .addEventListener("submit", loginFormHandler);
