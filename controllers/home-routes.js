@@ -57,7 +57,8 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-// GET route to get one post by id
+// this is the login route functionality 'front-end' for the site
+//url route is
 router.get("/post/:id", (req, res) => {
   Post.findOne({
     where: {
