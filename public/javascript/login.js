@@ -51,7 +51,9 @@ async function loginFormHandler(event) {
     });
 
     if (response.ok) {
+      alert("Login Successful");
       document.location.replace("/");
+      //alert("Login Successful");
     } else {
       alert(response.statusText);
     }
