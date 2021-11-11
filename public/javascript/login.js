@@ -45,10 +45,10 @@ async function loginFormHandler(event) {
     });
 
     if (response.ok) {
-      document.location.replace("/");
-      alert("you're logged in");
+      document.location.replace("/dashboard");
     } else {
-      alert(response.statusText);
+      let resulter = await response.json();
+      alert(result.message);
     }
   }
 }
