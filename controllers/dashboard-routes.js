@@ -3,25 +3,13 @@ const sequelize = require("../config/connection");
 const { Post, User, Comment } = require("../models");
 const withAuth = require("../utils/auth"); //middleware to check if user is logged in or not
 
-router.get("/", (req, res) => {
+router.get("/", withAuth, (req, res) => {
   Post.findAll({
     where: {
       // use the ID from the session
       user_id: req.session.user_id,
     },
-    attributes: [
-      "id",
-      "post_url",
-      "title",
-      "post_content",
-      "created_at",
-      [
-        sequelize.literal(
-          "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
-        ),
-        "vote_count",
-      ],
-    ],
+    attributes: ["id", "post_text", "title", "created_at"],
     include: [
       {
         model: Comment,
@@ -48,20 +36,12 @@ router.get("/", (req, res) => {
     });
 });
 
-router.get("/edit/:id", (req, res) => {
-  Post.findByPk(req.params.id, {
-    attributes: [
-      "id",
-      "post_url",
-      "title",
-      "created_at",
-      [
-        sequelize.literal(
-          "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
-        ),
-        "vote_count",
-      ],
-    ],
+router.get("/edit/:id", withAuth, (req, res) => {
+  Post.findOne({
+    where: {
+      id: req.params.id,
+    },
+    attributes: ["id", "post_text", "title", "created_at"],
     include: [
       {
         model: Comment,
@@ -78,16 +58,34 @@ router.get("/edit/:id", (req, res) => {
     ],
   })
     .then((dbPostData) => {
-      if (dbPostData) {
-        const post = dbPostData.get({ plain: true });
-
-        res.render("edit-post", {
-          post,
-          loggedIn: true,
-        });
-      } else {
-        res.status(404).end();
+      if (!dbPostData) {
+        res.status(404).json({ message: "No post found with this id" });
+        return;
       }
+      const post = dbPostData.get({ plain: true });
+      res.render("edit-post", { post, loggedIn: true });
+    })
+    .catch((err) => {
+      res.status(500).json(err);
+    });
+});
+
+//route to edit logged in user
+router.get("/edituser", withAuth, (req, res) => {
+  //ascess the User model and run findOne to get a single user based on params
+  User.findOne({
+    attributes: { exclude: ["password"] },
+    where: {
+      id: req.session.user_id,
+    },
+  })
+    .then((dbUserData) => {
+      if (!dbUserData) {
+        res.status(404).json({ message: "No user found with this id" });
+        return;
+      }
+      const user = dbUserData.get({ plain: true });
+      res.render("edit-user", { user, loggedIn: true });
     })
     .catch((err) => {
       res.status(500).json(err);
