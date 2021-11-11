@@ -20,6 +20,7 @@ class Post extends Model {
           "id", // this will be the post_id
           "post_url",
           "title",
+          "post_content",
           "created_at",
           [
             sequelize.literal(

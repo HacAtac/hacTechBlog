@@ -11,6 +11,7 @@ router.get("/", (req, res) => {
       "id",
       "post_url",
       "title",
+      "post_content",
       "created_at",
       [
         sequelize.literal(
@@ -38,8 +39,12 @@ router.get("/", (req, res) => {
   })
     .then((dbPostData) => {
       // this will return the posts in an array format that can be used in the home page to display the posts
-      const posts = dbPostData.map((post) => post.get({ plain: true }));
-      res.render("homepage", { posts });
+      const posts = dbPostData.map((post) => post.get({ plain: true })); // this will return the posts in an array format that can be used in the home page to display the posts
+      res.render("homepage", {
+        // this will render the home page with the posts array
+        posts, // this will render the home page with the posts array
+        loggedIn: req.session.loggedIn, // this will render the home page with the loggedIn boolean value
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -97,10 +102,8 @@ router.get("/post/:id", (req, res) => {
         res.status(404).json({ message: "No post found with this id" });
         return;
       }
-      const post = dbPostData.get({ plain: true });
-      res.render("single-post", {
-        post: post,
-      });
+      const post = dbPostData.get({ plain: true }); // this will return the posts in an array format that can be used in the home page to display the posts
+      res.render("single-post", { post });
     })
     .catch((err) => {
       console.log(err);

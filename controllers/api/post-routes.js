@@ -1,31 +1,30 @@
 //require files that is needed for this controller
+const sequelize = require("../../config/sequelize");
 const router = require("express").Router();
-const sequelize = require("../../config/connection");
+//const sequelize = require("../../config/connection");
 const { isContext } = require("vm"); //this is a built in node module that is used to check if the object is empty
 const { Post, User, Vote, Comment } = require("../../models"); // import the models
 
-//async route handler to get all users
+// get all users
 router.get("/", (req, res) => {
-  // this is a sequelize method that is used to find all the posts
   Post.findAll({
     attributes: [
-      // this is an array of attributes that we want to get from the database and send back to the client
       "id",
       "post_url",
       "title",
       "created_at",
+      "post_content",
       [
         sequelize.literal(
-          // this is a sequelize method that is used to get the sum of all the votes for a post and send back to the client
           "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
         ),
-        "vote_count", // this is the name of the attribute that we want to send back to the client
+        "vote_count",
       ],
     ],
-    order: [["created_at", "DESC"]], // this is a sequelize method that is used to order the posts by the date they were created
+    order: [["created_at", "DESC"]],
     include: [
       {
-        model: Comment, // this is a sequelize method that is used to include the comments for each post
+        model: Comment,
         attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
         include: {
           model: User,
@@ -97,7 +96,7 @@ router.post("/", (req, res) => {
     title: req.body.title,
     post_url: req.body.post_url,
     post_content: req.body.post_content,
-    user_id: req.body.user_id,
+    user_id: req.session.user_id,
   })
     .then((dbPostData) => {
       res.json(dbPostData);
@@ -127,13 +126,22 @@ router.put("/upvote", (req, res) => {
 //may need to change this route
 //put route to change title and body of a Post model
 router.put("/:id", (req, res) => {
-  // this is a sequelize method that is used to update the post with the new title and body that was sent in the request body from the client side
-  Post.update(req.body, {
-    where: {
-      id: req.params.id,
+  Post.update(
+    {
+      title: req.body.title,
+      post_content: req.body.post_content,
     },
-  })
+    {
+      where: {
+        id: req.params.id,
+      },
+    }
+  )
     .then((dbPostData) => {
+      if (!dbPostData) {
+        res.json(404).json({ message: "No post found with this id" });
+        return;
+      }
       res.json(dbPostData);
     })
     .catch((err) => {

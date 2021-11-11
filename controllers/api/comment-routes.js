@@ -3,16 +3,13 @@ const { Comment } = require("../../models");
 
 // GET /api/comments
 router.get("/", (req, res) => {
-  Comment.findAll({
-    order: [["createdAt", "DESC"]],
-  })
+  Comment.findAll()
     .then((dbCommentData) => res.json(dbCommentData))
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
     });
 });
-
 // POST /api/comments
 router.post("/", (req, res) => {
   //check session
@@ -20,12 +17,12 @@ router.post("/", (req, res) => {
     Comment.create({
       comment_text: req.body.comment_text,
       post_id: req.body.post_id,
-      user_id: req.body.user_id,
+      user_id: req.session.user_id,
     })
       .then((dbCommentData) => res.json(dbCommentData))
       .catch((err) => {
         console.log(err);
-        res.status(500).json(err);
+        res.status(400).json(err);
       });
   }
 });
