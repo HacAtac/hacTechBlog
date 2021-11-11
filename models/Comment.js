@@ -1,18 +1,16 @@
-const { Model, DataTypes } = require("sequelize"); // this is how we import sequelize
-const sequelize = require("../config/connection"); // this is how we import the connection
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/connection");
 
-class Comment extends Model {} // This is a class, not an object (not a function) so we don't need to call new on it
+class Comment extends Model {}
 
 Comment.init(
   {
     id: {
-      type: DataTypes.INTEGER, // integer data type for id column
-      allowNull: false,
+      type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
     comment_text: {
-      // comment text field (varchar 255) - required field
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
@@ -20,15 +18,16 @@ Comment.init(
       },
     },
     user_id: {
-      type: DataTypes.INTEGER, // foreign key to user table (user_id) in the database
+      type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: "user",
         key: "id",
       },
     },
     post_id: {
-      // this is the foreign key for the post table that this comment belongs to
       type: DataTypes.INTEGER,
+      allowNull: false,
       references: {
         model: "post",
         key: "id",
@@ -36,11 +35,11 @@ Comment.init(
     },
   },
   {
-    sequelize, // passing the connection instance
-    freezeTableName: true, // Model tableName will be the same as the model name
-    underscored: true, // don't use camelcase for automatically added attributes but underscore style
-    modelName: "comment", // override the default model name
+    sequelize,
+    freezeTableName: true,
+    underscored: true,
+    modelName: "comment",
   }
 );
 
-module.exports = Comment; // export the model
+module.exports = Comment;

@@ -1,9 +1,7 @@
 // this is the router object from express module that we are using to create the routes
 const router = require("express").Router();
 const { User, Post, Comment } = require("../../models");
-const session = require("express-session");
 const withAuth = require("../../utils/auth");
-const SequelizeStore = require("connect-session-sequelize")(session.Store); // this is the sequelize store that we are using to store the session in the database
 
 // this is the route that will be used to get all the users
 router.get("/", (req, res) => {
@@ -19,10 +17,9 @@ router.get("/", (req, res) => {
     });
 });
 
-//GET /api/users/:id
+// Get a single user by id number
 router.get("/:id", (req, res) => {
   User.findOne({
-    // ^ SELECT * FROM users WHERE id = x;
     attributes: { exclude: ["password"] },
     where: {
       id: req.params.id,
@@ -34,21 +31,15 @@ router.get("/:id", (req, res) => {
       },
       {
         model: Comment,
-        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
-        include: {
-          model: Post,
-          attributes: ["title"],
-        },
+        attributes: ["id", "comment_text", "created_at"],
       },
     ],
   })
     .then((dbUserData) => {
-      // will return the data from the database if there is no error
       if (!dbUserData) {
-        res.status(404).json({ message: "No user found with this id" });
+        res.status(404).json({ message: "No User found with this id" });
         return;
       }
-      res.json(dbUserData);
     })
     .catch((err) => {
       console.log(err);
@@ -56,11 +47,10 @@ router.get("/:id", (req, res) => {
     });
 });
 
-// this will be used to create a new user in the database and will return the new user data
+//create a new user
 router.post("/", (req, res) => {
   User.create({
     username: req.body.username,
-    email: req.body.email,
     password: req.body.password,
   })
     .then((dbUserData) => {
@@ -78,37 +68,34 @@ router.post("/", (req, res) => {
     });
 });
 
-// POST /login  Creates a new user
+//login route
 router.post("/login", (req, res) => {
   User.findOne({
     where: {
-      email: req.body.email,
+      username: req.body.username,
     },
   }).then((dbUserData) => {
+    //verify user
     if (!dbUserData) {
-      res.status(400).json({ message: "No user with that email address!" });
+      res.status(400).json({ message: "Username not Found" });
       return;
     }
-
     const validPassword = dbUserData.checkPassword(req.body.password);
     if (!validPassword) {
-      res.status(400).json({ message: "Incorrect password!" });
+      res.status(400).json({ message: "Incorrect Password" });
       return;
     }
-
     req.session.save(() => {
-      // this will save the session to the database and will return the session
       req.session.user_id = dbUserData.id;
       req.session.username = dbUserData.username;
       req.session.loggedIn = true;
-
       res.json({ user: dbUserData, message: "You are now logged in!" });
     });
   });
 });
 
 //post route for logging out
-router.post("/logout", withAuth, (req, res) => {
+router.post("/logout", (req, res) => {
   if (req.session.loggedIn) {
     req.session.destroy(() => {
       res.status(204).end();
@@ -120,7 +107,7 @@ router.post("/logout", withAuth, (req, res) => {
 
 // route to update username data by id
 // PUT /api/users/1
-router.put("/:id", withAuth, (req, res) => {
+router.put("/:id", (req, res) => {
   // put route to update username data by id using hooks in the database
   User.update(req.body, {
     individualHooks: true, // true will allow us to use the hooks in db
@@ -138,13 +125,12 @@ router.put("/:id", withAuth, (req, res) => {
       res.json(dbUserData);
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json(err);
     });
 });
 
 // route will be used to delete a user by id
-router.delete("/:id", withAuth, (req, res) => {
+router.delete("/:id", (req, res) => {
   User.destroy({
     where: {
       id: req.params.id,

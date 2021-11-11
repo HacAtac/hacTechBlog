@@ -7,10 +7,9 @@ async function logout() {
 
   if (response.ok) {
     document.location.replace("/"); //redirect to home page
-    alert("youre now logged out");
   } else {
     alert(response.statusText);
   }
 }
-
+//query selector to make the logout button functional
 document.querySelector("#logout").addEventListener("click", logout);

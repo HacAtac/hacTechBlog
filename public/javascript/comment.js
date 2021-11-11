@@ -1,13 +1,10 @@
-// async function to handle comment form handler
-//front end validation and ajax call to backend to save comment to database and display on page reload
 async function commentFormHandler(event) {
   event.preventDefault();
 
   const comment_text = document
-    .querySelector('textarea[name="comment-body]')
+    .querySelector('textarea[name="comment-body"]')
     .value.trim();
 
-  //const = post_id to location and string/split the length minus 1
   const post_id = window.location.toString().split("/")[
     window.location.toString().split("/").length - 1
   ];
@@ -32,7 +29,6 @@ async function commentFormHandler(event) {
   }
 }
 
-//query selector for comment form and event listener for submit
 document
   .querySelector(".comment-form")
   .addEventListener("submit", commentFormHandler);

@@ -2,38 +2,31 @@
 const router = require("express").Router();
 const sequelize = require("../config/connection");
 const { Post, User, Comment } = require("../models");
-// this is the home page route functionality 'front-end'
-router.get("/", (req, res) => {
-  // this will be the home page route for the site
-  Post.findAll({
-    // find all posts from the database and return them to the home page
-    attributes: ["id", "post_text", "title", "created_at"],
-    order: [["created_at", "DESC"]], //  order the posts by the date they were created in descending order
 
+router.get("/", (req, res) => {
+  Post.findAll({
+    attributes: ["id", "title", "post_text", "created_at"],
     include: [
-      // will include the user who created the post
       {
-        model: User,
-        attributes: ["username"],
-      },
-      {
-        model: Comment, // will include the comments for each post
+        model: Comment,
         attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
         include: {
           model: User,
           attributes: ["username"],
-        }, // this is the name of the column that will be returned
+        },
+      },
+      {
+        model: User,
+        attributes: ["username"],
       },
     ],
   })
-    //will render the home page with the posts
     .then((dbPostData) => {
-      // this will return the posts in an array format that can be used in the home page to display the posts
-      const posts = dbPostData.map((post) => post.get({ plain: true })); // this will return the posts in an array format that can be used in the home page to display the posts
+      const posts = dbPostData.map((post) => post.get({ plain: true }));
+      // pass a single post object into the homepage template
       res.render("homepage", {
-        // this will render the home page with the posts array
-        posts, // this will render the home page with the posts array
-        loggedIn: req.session.loggedIn, // this will render the home page with the loggedIn boolean value
+        posts,
+        loggedIn: req.session.loggedIn,
       });
     })
     .catch((err) => {
@@ -52,14 +45,12 @@ router.get("/login", (req, res) => {
   res.render("login");
 });
 
-// this is the login route functionality 'front-end' for the site
-//url route is
 router.get("/post/:id", (req, res) => {
   Post.findOne({
     where: {
       id: req.params.id,
     },
-    attributes: ["id", "post_text", "title", "created_at"],
+    attributes: ["id", "title", "post_text", "created_at"],
     include: [
       {
         model: Comment,
@@ -77,10 +68,13 @@ router.get("/post/:id", (req, res) => {
   })
     .then((dbPostData) => {
       if (!dbPostData) {
-        res.status(404).json({ message: "No post found with this id" });
+        res.status(404).json({ message: "No Post found with this id" });
         return;
       }
-      const post = dbPostData.get({ plain: true }); // this will return the posts in an array format that can be used in the home page to display the posts
+      //serialize the data
+      const post = dbPostData.get({ plain: true });
+
+      //pass data to the template
       res.render("single-post", {
         post,
         loggedIn: req.session.loggedIn,
@@ -90,15 +84,6 @@ router.get("/post/:id", (req, res) => {
       console.log(err);
       res.status(500).json(err);
     });
-});
-
-//render signup page if user is logged in redirect to home page
-router.get("/signup", (req, res) => {
-  if (req.session.loggedIn) {
-    res.redirect("/");
-    return;
-  }
-  res.render("signup");
 });
 
 module.exports = router;

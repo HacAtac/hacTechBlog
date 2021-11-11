@@ -3,9 +3,9 @@ const router = require("express").Router();
 // this will be the api routes file that we will create later on
 const apiRoutes = require("./api");
 // this is the home routes file that we will create later on
-const homeRoutes = require("./home-routes");
+const homeRoutes = require("./home-routes.js");
 // this is the dashboard routes
-const dashboardRoutes = require("./dashboard-routes");
+const dashboardRoutes = require("./dashboard-routes.js");
 // this will be used to handle all the routes that are not api routes
 router.use("/", homeRoutes);
 // this is the api route for the api routes in the api folder
