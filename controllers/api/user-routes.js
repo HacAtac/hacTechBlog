@@ -1,6 +1,9 @@
 // this is the router object from express module that we are using to create the routes
 const router = require("express").Router();
-const { User, Post, Vote, Comment } = require("../../models");
+const { User, Post, Comment } = require("../../models");
+const session = require("express-session");
+const withAuth = require("../../utils/auth");
+const SequelizeStore = require("connect-session-sequelize")(session.Store); // this is the sequelize store that we are using to store the session in the database
 
 // this is the route that will be used to get all the users
 router.get("/", (req, res) => {
@@ -21,31 +24,23 @@ router.get("/:id", (req, res) => {
   User.findOne({
     // ^ SELECT * FROM users WHERE id = x;
     attributes: { exclude: ["password"] },
+    where: {
+      id: req.params.id,
+    },
     include: [
       {
         model: Post,
-        attributes: ["id", "title", "post_url", "created_at"],
+        attributes: ["id", "title", "post_text", "created_at"],
       },
       {
         model: Comment,
-        attributes: ["id", "comment_text", "created_at"],
+        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
         include: {
           model: Post,
           attributes: ["title"],
         },
       },
-      {
-        model: Post,
-        attributes: ["title"],
-        through: Vote,
-        as: "voted_posts",
-      },
     ],
-
-    where: {
-      // this is to find the user with the id that is passed in the url
-      id: req.params.id,
-    },
   })
     .then((dbUserData) => {
       // will return the data from the database if there is no error
@@ -113,7 +108,7 @@ router.post("/login", (req, res) => {
 });
 
 //post route for logging out
-router.post("/logout", (req, res) => {
+router.post("/logout", withAuth, (req, res) => {
   if (req.session.loggedIn) {
     req.session.destroy(() => {
       res.status(204).end();
@@ -125,7 +120,7 @@ router.post("/logout", (req, res) => {
 
 // route to update username data by id
 // PUT /api/users/1
-router.put("/:id", (req, res) => {
+router.put("/:id", withAuth, (req, res) => {
   // put route to update username data by id using hooks in the database
   User.update(req.body, {
     individualHooks: true, // true will allow us to use the hooks in db
@@ -136,7 +131,7 @@ router.put("/:id", (req, res) => {
   })
     .then((dbUserData) => {
       // will return the data from the database
-      if (!dbUserData[1]) {
+      if (!dbUserData[0]) {
         res.status(404).json({ message: "No user found with this id" }); // will return the error if there is no user with the id that is passed in the request
         return;
       }
@@ -149,7 +144,7 @@ router.put("/:id", (req, res) => {
 });
 
 // route will be used to delete a user by id
-router.delete("/:id", (req, res) => {
+router.delete("/:id", withAuth, (req, res) => {
   User.destroy({
     where: {
       id: req.params.id,
