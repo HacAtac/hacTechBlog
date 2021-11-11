@@ -1,0 +1,36 @@
+<section class="create-post-handeler">
+  <h2>Create New Post</h2>
+
+  <form class="new-post-form">
+    <div class="title-handle">
+      <label for="post-title">Title</label>
+      <input type="text" id="post-title" name="post-title" />
+    </div>
+    <div class="link-handle">
+      <label for="post-url">Link</label>
+      <input id="post-url" name="post-url" />
+    </div>
+    <div class="description-handle">
+      <label for="post-description">Description</label>
+      <input id="post-description" type="text" name="post-description" min-length= "10" placeholder="Must be at least 10 characters long"/>
+    </div>
+    <div class="button">
+        <button type="submit" class="btn">Create</button>
+    </div>
+  </form>
+</section>
+
+{{#if posts.length}}
+<section>
+  <h2>Your Posts</h2>
+  <ol>
+    {{#each posts as |post|}}
+    <li>
+      {{> post-info post}}
+      <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit post</a>
+    </li>
+    {{/each}}
+  </ol>
+</section>
+{{/if}}
+<script src="/javascript/add-post.js"></script>

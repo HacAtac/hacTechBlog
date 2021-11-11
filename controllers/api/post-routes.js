@@ -1,5 +1,5 @@
 //require files that is needed for this controller
-const sequelize = require("../../config/sequelize");
+const sequelize = require("../../config/connection");
 const router = require("express").Router();
 //const sequelize = require("../../config/connection");
 const { isContext } = require("vm"); //this is a built in node module that is used to check if the object is empty
