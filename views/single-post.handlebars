@@ -1,18 +1,17 @@
-<div class="single-post-handeler">
-  {{> post-info post}}
-
+{{> post-info post}}
+{{#if loggedIn}}
   <form class="comment-form">
-    <div class="comment-body-handler">
+    <div>
       <textarea name="comment-body"></textarea>
     </div>
 
-    <div class="btn">
+    <div>
       <button type="submit">add comment</button>
-      <button type="button" class="upvote-btn">upvote</button>
     </div>
   </form>
-</div>
+{{/if}}
 
 {{> comments post.comments}}
+{{#if}}
 <script src="/javascript/comment.js"></script>
-<script src="/javascript/upvote.js"></script>
+{{/if}}

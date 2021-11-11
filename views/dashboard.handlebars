@@ -1,19 +1,24 @@
-<section class="create-post-handler">
-  <h2>Create New Post</h2>
+<section class="row">
+  <div class = "column">
+    <h2>Create New Post</h2>
 
-  <form class="new-post-form">
-    <div class="title-handle">
-      <label for="post-title">Title</label>
-      <input type="text" id="post-title" name="post-title" />
-    </div>
-    <div class="description-handle">
-      <label for="post-description">Description</label>
-      <input id="post-description" type="text" name="post-description" min-length= "10" placeholder="Must be at least 10 characters long"/>
-    </div>
-    <div class="button">
-        <button type="submit" class="btn">Create</button>
-    </div>
-  </form>
+    <form class="new-post-form">
+      <div>
+        <label for="post-title">Title</label>
+        <input type="text" id="post-title" name="post-title" />
+      </div>
+      <div>
+        <label for="post-text">Text</label>
+        <textarea id="post-text" name="post-text"></textarea>
+      </div>
+      <button type="submit" class="btn">Create</button>
+    </form>
+  </div>
+  <div class = "column">
+    <h2>About Me</h2>
+    {{> user-info}}
+  </div>
+
 </section>
 
 {{#if posts.length}}
@@ -29,4 +34,6 @@
   </ol>
 </section>
 {{/if}}
+
+<!--Script to add a post-->
 <script src="/javascript/add-post.js"></script>

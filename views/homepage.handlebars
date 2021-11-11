@@ -1,15 +1,7 @@
-<div class="outer-border">
-    <div class="inner-border">
-        <div class="start-message">
-            <h2>Welcome to hacTechBlog homepage</h2>
-            <p>Sign in or create an account to get started</p>
-        </div>
-    </div>
-</div>
-<ol class="post-list">
-    {{#each posts as |post|}}
-    <li>
-       {{> post-info post}}
-    </li>
-    {{/each}}
-</ol>
+<ul class="post-list">
+  {{#each posts as |post|}}
+  <li>
+    {{> post-info post }}
+  </li>
+  {{/each}}
+</ul>

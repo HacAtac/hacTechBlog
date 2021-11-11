@@ -1,9 +1,10 @@
 const express = require("express");
-const routes = require("./controllers");
+const routes = require("./controllers/");
 const sequelize = require("./config/connection"); // this is our connection to the db
 const path = require("path"); //used for file path
 const session = require("express-session"); // session is a middleware that is used to store data on the server side
 const helpers = require("./utils/helpers"); //will be used to encrypt and decrypt the session data
+require("dotenv").config(); // this is used to read the .env file
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,7 +23,7 @@ const SequelizeStore = require("connect-session-sequelize")(session.Store); // w
 
 const sess = {
   // session configuration options
-  secret: "Super secret secret",
+  secret: process.env.DB_SESSION_SECRET,
   cookie: {},
   resave: false,
   saveUninitialized: true,
