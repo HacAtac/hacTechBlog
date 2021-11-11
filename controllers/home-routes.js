@@ -7,36 +7,26 @@ router.get("/", (req, res) => {
   // this will be the home page route for the site
   Post.findAll({
     // find all posts from the database and return them to the home page
-    attributes: [
-      "id",
-      "post_url",
-      "title",
-      "post_content",
-      "created_at",
-      [
-        sequelize.literal(
-          // this is a sequelize function that will return the username of the user who created the post
-          "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
-        ),
-        "vote_count", // this is the name of the column that will be returned
-      ],
-    ],
+    attributes: ["id", "post_text", "title", "created_at"],
+    order: [["created_at", "DESC"]], //  order the posts by the date they were created in descending order
+
     include: [
       // will include the user who created the post
       {
-        model: Comment, // will include the comments associated with the post
-        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"], // will include the user who created the comment
+        model: User,
+        attributes: ["username"],
+      },
+      {
+        model: Comment, // will include the comments for each post
+        attributes: ["id", "comment_text", "post_id", "user_id", "created_at"],
         include: {
           model: User,
           attributes: ["username"],
-        },
-      },
-      {
-        model: User, // this is the user who created the post
-        attributes: ["username"], // this is the name of the column that will be returned
+        }, // this is the name of the column that will be returned
       },
     ],
   })
+    //will render the home page with the posts
     .then((dbPostData) => {
       // this will return the posts in an array format that can be used in the home page to display the posts
       const posts = dbPostData.map((post) => post.get({ plain: true })); // this will return the posts in an array format that can be used in the home page to display the posts
@@ -69,19 +59,7 @@ router.get("/post/:id", (req, res) => {
     where: {
       id: req.params.id,
     },
-    attributes: [
-      "id",
-      "post_url",
-      "title",
-      "post_content",
-      "created_at",
-      [
-        sequelize.literal(
-          "(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)"
-        ),
-        "vote_count",
-      ],
-    ],
+    attributes: ["id", "post_text", "title", "created_at"],
     include: [
       {
         model: Comment,
@@ -103,12 +81,24 @@ router.get("/post/:id", (req, res) => {
         return;
       }
       const post = dbPostData.get({ plain: true }); // this will return the posts in an array format that can be used in the home page to display the posts
-      res.render("single-post", { post });
+      res.render("single-post", {
+        post,
+        loggedIn: req.session.loggedIn,
+      });
     })
     .catch((err) => {
       console.log(err);
       res.status(500).json(err);
     });
+});
+
+//render signup page if user is logged in redirect to home page
+router.get("/signup", (req, res) => {
+  if (req.session.loggedIn) {
+    res.redirect("/");
+    return;
+  }
+  res.render("signup");
 });
 
 module.exports = router;
