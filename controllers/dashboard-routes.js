@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const sequelize = require("../config/connection");
 const { Post, User, Comment } = require("../models");
+const withAuth = require("../utils/auth"); //middleware to check if user is logged in or not
 
 router.get("/", (req, res) => {
   Post.findAll({
