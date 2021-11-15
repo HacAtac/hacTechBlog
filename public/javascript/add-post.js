@@ -1,4 +1,7 @@
 async function newFormHandler(event) {
+  //this function will handle the form submission and prevent the default behavior
+  //then it will call the addPost function to add the post to the database and then redirect to the home page
+
   event.preventDefault();
 
   const title = document.querySelector('input[name="post-title"]').value;
