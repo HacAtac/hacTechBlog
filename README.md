@@ -15,6 +15,7 @@
   </ul>
 
 <a href ="https://github.com/HacAtac/hacTechBlog" target="_blank">Link to my git hub application.</a></br>
+<a href ="https://hactechblog.herokuapp.com/" target="_blank">Link to my deployed app!</a>
 
 <h3>Screenshot of app!</h3>
 
