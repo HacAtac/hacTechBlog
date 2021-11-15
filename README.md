@@ -18,4 +18,4 @@
 
 <h3>Screenshot of app!</h3>
 
-![image](https://user-images.githubusercontent.com/87215152/139605012-9fcbdc2c-cac5-4531-a72c-05126b82e962.png)
+![image](https://user-images.githubusercontent.com/87215152/141714855-6f27f24d-9395-40e1-aef4-44460f657902.png)
