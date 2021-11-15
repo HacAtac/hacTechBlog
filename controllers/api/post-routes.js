@@ -151,9 +151,11 @@ router.post("/:id/comments", withAuth, (req, res) => {
     });
 });
 
-//create a new POST route to add a new post on the dashboard
 router.post("/dashboard", withAuth, (req, res) => {
+  // this function will be used to get the user's posts and comments from the database and return them to the front end
+
   Post.create({
+    // create a new post in the database with the user's input from the front end
     title: req.body.title,
     post_text: req.body.post_text,
     user_id: req.session.user_id,
